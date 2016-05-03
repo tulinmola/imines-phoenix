@@ -31,6 +31,7 @@ defmodule Imines.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.1.4"},
+     {:mix_test_watch, "~> 0.2", only: :dev},
      {:mongodb_ecto, ">= 0.0.0"},
      {:phoenix_ecto, "~> 2.0"},
      {:phoenix_html, "~> 2.4"},
