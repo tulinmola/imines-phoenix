@@ -1,27 +1,15 @@
 defmodule Imines.TileTest do
   use Imines.ModelCase
+  import Imines.Factory
 
   alias Imines.Tile
   alias Ecto.Changeset
 
-  @valid_attrs %{name: "test"}
   @invalid_attrs %{}
 
-  defp water_generator, do: Tile.water
-  defp bomb_generator, do: Tile.bomb
-
-  def create_with_water! do
-    Tile.changeset_with_generator(%Tile{}, @valid_attrs, &water_generator/0)
-    |> Imines.Repo.insert!()
-  end
-  def create_with_bombs! do
-    Tile.changeset_with_generator(%Tile{}, @valid_attrs, &bomb_generator/0)
-    |> Imines.Repo.insert!()
-  end
-
-  test "changeset with valid attributes but no values given" do
-    changeset = Tile.changeset(%Tile{}, @valid_attrs)
-    refute changeset.valid?
+  test "changeset with valid attributes and default generator" do
+    changeset = build_tile()
+    assert changeset.valid?
   end
 
   test "changeset with invalid attributes" do
@@ -29,27 +17,47 @@ defmodule Imines.TileTest do
     refute changeset.valid?
   end
 
-  test "changeset with generator" do
-    changeset = Tile.changeset_with_generator(%Tile{}, @valid_attrs, &water_generator/0)
+  test "changeset with invalid name" do
+    changeset = Tile.changeset_with_generator(%Tile{}, %{name: "invalid"})
+    refute changeset.valid?
+  end
+
+  test "changeset with invalid name x coordinate" do
+    changeset = Tile.changeset_with_generator(%Tile{}, %{name: "_x0"})
+    refute changeset.valid?
+  end
+
+  test "changeset with invalid name y coordinate" do
+    changeset = Tile.changeset_with_generator(%Tile{}, %{name: "0x_"})
+    refute changeset.valid?
+  end
+
+  test "changeset with custom generator" do
+    changeset = build_water_tile!()
     count = Tile.size * Tile.size
     expected_values = 1..count |> Enum.map(fn(_) -> Tile.water end)
     assert Changeset.get_field(changeset, :values) == expected_values
   end
 
-  test "changeset with default generator" do
-    changeset = Tile.changeset_with_generator(%Tile{}, @valid_attrs)
-    assert changeset.valid?
+  test "get or create tile by name" do
+    tile = Tile.get_or_create_tile!("42x42")
+    assert tile
   end
 
-  test "set/get value" do
-    tile = create_with_water!
-    changeset = tile |> Tile.set_value(1, 2, 5)
-    assert Tile.get_value(changeset, 1, 2) == {:count, 5}
+  test "showing non water does nothing" do
+    assert :no_op = create_bombs_tile!() |> Tile.show(0, 0)
   end
 
-  test "is bomb?" do
-    tile = create_with_bombs!
-    assert Tile.get_value(tile, 0, 0) == {:bomb}
+  test "showing bomb behind water kills you" do
+    assert {:bomb, _changeset} = create_water_with_bombs_tile!() |> Tile.show(0, 0)
   end
 
+  test "showing water with no bombs around inside tile counts 0" do
+    assert {:count, 0, _changeset} = create_water_tile!() |> Tile.show(1, 1)
+  end
+
+  test "showing water with no bombs around between various tiles counts 0" do
+    create_water_tile!("-1x0")
+    assert {:count, 0, _changeset} = create_water_tile!("0x0") |> Tile.show(0, 1)
+  end
 end
