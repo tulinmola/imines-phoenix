@@ -2,7 +2,7 @@ defmodule Imines.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "rooms:*", Imines.RoomChannel
+  channel "tiles:*", Imines.TileChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
