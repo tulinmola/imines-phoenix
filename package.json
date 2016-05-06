@@ -16,6 +16,7 @@
     "mocha": "^2.4.5"
   },
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register test/js/**/*.coffee"
+    "test": "mocha --compilers coffee:coffee-script/register test/js/**/*.coffee",
+    "test:watch": "npm test -- --watch"
   }
 }
