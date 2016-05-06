@@ -32,6 +32,7 @@ defmodule Imines.Mixfile do
   defp deps do
     [{:phoenix, "~> 1.1.4"},
      {:mix_test_watch, "~> 0.2", only: :dev},
+     {:floki, "~> 0.8", only: :test},
      {:mongodb_ecto, ">= 0.0.0"},
      {:phoenix_ecto, "~> 2.0"},
      {:phoenix_html, "~> 2.4"},

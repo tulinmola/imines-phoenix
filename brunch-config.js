@@ -3,7 +3,6 @@ exports.config = {
   files: {
     javascripts: {
       joinTo: "js/app.js"
-
       // To use a separate vendor.js bundle, specify two files path
       // https://github.com/brunch/brunch/blob/stable/docs/config.md#files
       // joinTo: {
@@ -21,7 +20,12 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css"
+      joinTo: "css/app.css",
+      order: {
+        before: [
+          "web/static/css/reset.css"
+        ]
+      }
     },
     templates: {
       joinTo: "js/app.js"
