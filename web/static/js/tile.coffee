@@ -1,11 +1,11 @@
 EventEmitter = require("./events")
 
-SIZE = 8
-valuesIndex = (x, y) -> (y * SIZE) + x
+TILE_SIZE = 8  # TODO: Get from some kind of config?
+valuesIndex = (x, y) -> (y * TILE_SIZE) + x
 
 class Tile extends EventEmitter
   constructor: (@rt, @x, @y) ->
-    @values = (-1 for index in [1..(SIZE*SIZE)])
+    @values = (-1 for index in [1..TILE_SIZE * TILE_SIZE])
     name = "tiles:#{@x}x#{@y}"
     @channel = @rt.join name, {}, (error, response) =>
       unless error
@@ -18,6 +18,9 @@ class Tile extends EventEmitter
 
   refresh: (@values) ->
     @emit("refresh")
+
+  destroy: ->
+    @emit("destroy")
 
   update: (x, y, value) ->
     @values[valuesIndex(x, y)] = value
