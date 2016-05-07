@@ -19,7 +19,7 @@ defmodule Imines.TileChannel do
       {:count, count, changeset} ->
         Repo.update!(changeset)
         broadcast socket, "update", %{x: x, y: y, value: count}
-        %{status: "count", score: count}
+        %{status: "count", value: count, score: count}
       _ ->
         %{status: "none"}
     end

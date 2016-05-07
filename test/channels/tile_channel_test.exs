@@ -23,7 +23,7 @@ defmodule Imines.TileChannelTest do
     tile = create_water_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
     ref = push(socket, "show", %{"x" => 4, "y" => 4})
-    assert_reply ref, :ok, %{score: 0}
+    assert_reply ref, :ok, %{value: 0, score: 0}
     assert_broadcast "update", %{x: 4, y: 4, value: 0}
     value = Repo.get!(Tile, tile.id) |> Tile.get_value(4, 4)
     assert 0 == value
