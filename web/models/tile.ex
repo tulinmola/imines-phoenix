@@ -4,7 +4,7 @@ defmodule Imines.Tile do
   alias Imines.Repo
 
   @size 8
-  @bombs_factor 0.2
+  @bombs_factor 0.15
 
   @bomb 9
   @water 10

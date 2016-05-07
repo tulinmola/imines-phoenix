@@ -5,7 +5,7 @@ class TileFactory
   constructor: (@rt) ->
 
   create: (id) ->
-    [x, y] = id.split("x")
+    [x, y] = id.split("x").map((e) -> parseInt(e, 10))
     new Tile(@rt, x, y)
 
 class TileManager

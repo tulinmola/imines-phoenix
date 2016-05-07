@@ -45,7 +45,7 @@ describe "Tile", ->
 
   it "should receive status when sending show", (done) ->
     tile = new Tile(rt, 0, 0)
-    tile.show 1, 2, (status, _message) ->
+    tile.show 1, 2, (_tile, _x, _y, status, _message) ->
       assert.equal "ok", status
       done()
 

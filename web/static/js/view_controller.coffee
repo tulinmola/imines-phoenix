@@ -9,6 +9,9 @@ tileInArray = (tile, array) -> array.indexOf(tile) >= 0
 BLOCK_SIZE = 32 # TODO: Adapt this block size depending on current mobile/desktop environment
 TILE_SIZE = 8   # TODO: Get from some kind of config?
 
+NEIGHBOUR_DX = [-1, 0, 1, -1, 1, -1, 0, 1]
+NEIGHBOUR_DY = [-1, -1, -1, 0, 0, 1, 1, 1]
+
 class ViewController extends EventEmitter
   constructor: (element, @tiles) ->
     @$el = $(element)
@@ -47,15 +50,40 @@ class ViewController extends EventEmitter
 
   tap: (position) ->
     {tile, x, y} = @getTileAndPosition(position)
+    @show(tile, x, y)
+
+  show: (tile, x, y) ->
     tile.show(x, y, @showReponse)
 
-  showReponse: (message) =>
+  showReponse: (tile, x, y, message) =>
     switch message.status
       when "count"
         {value, score} = message
+        @showNeighbors(tile, x, y) if value == 0
         @updateScore(@score + score)
       when "bomb"
         @die()
+
+  showNeighbors: (tile, x, y) ->
+    for i in [0...8]
+      nx = x + NEIGHBOUR_DX[i]
+      ny = y + NEIGHBOUR_DY[i]
+      @showNeighbour(tile, nx, ny)
+    undefined
+
+  showNeighbour: (tile, x, y) ->
+    inTile = x >= 0 && x < TILE_SIZE && y >= 0 && y < TILE_SIZE
+    if inTile
+      @show(tile, x, y) if tile.isWater(x, y)
+    else
+      # Get neightbour tile
+      dtx = Math.floor(x / TILE_SIZE)
+      dty = Math.floor(y / TILE_SIZE)
+      neightbour = @tiles.get(hash(tile.x + dtx, tile.y + dty))
+      # And show in it!
+      rx = mod(x, TILE_SIZE)
+      ry = mod(y, TILE_SIZE)
+      @show(neightbour, rx, ry) if neightbour.isWater(rx, ry)
 
   updateScore: (@score) ->
     @$score.html(@score)
