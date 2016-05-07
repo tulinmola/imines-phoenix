@@ -5,6 +5,9 @@ Tile = require("../../web/static/js/tile")
 class Channel extends EventEmitter
   push: (event, payload) ->
     @emit("push", event, payload)
+    result = receive: (status, callback) =>
+      setTimeout (-> callback(status, payload)), 1
+    result
   leave: ->
     @emit("leave")
 
@@ -38,7 +41,13 @@ describe "Tile", ->
       assert.equal "show", event
       assert.deepEqual {x: 1, y: 2}, payload
       done()
-    tile.show(1, 2)
+    tile.show(1, 2, (->))
+
+  it "should receive status when sending show", (done) ->
+    tile = new Tile(rt, 0, 0)
+    tile.show 1, 2, (status, _message) ->
+      assert.equal "ok", status
+      done()
 
   it "should update value", ->
     tile = new Tile(rt, 0, 0)

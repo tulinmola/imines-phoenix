@@ -19,8 +19,9 @@ class Tile extends EventEmitter
   refresh: (@values) ->
     @emit("refresh")
 
-  show: (x, y) ->
+  show: (x, y, callback) ->
     @channel.push("show", {x, y})
+      .receive("ok", callback)
 
   destroy: ->
     @channel.leave()
