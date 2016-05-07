@@ -14,11 +14,14 @@ class ViewController extends EventEmitter
     @$el = $(element)
     @$axes = @$el.find(".axes")
     @$arena = @$el.find(".arena")
+    @$score = $("#score em")
     [@icons] = $("#icons-2x")   # TODO: Get icon based on device pixel ratio
 
     @navigator = new Navigator(this)
     @currentTiles = []
     @renderers = {}
+
+    @score = 0
 
     $(window).on "resize", @resize
     setTimeout ( => @resize()), 1
@@ -44,7 +47,17 @@ class ViewController extends EventEmitter
 
   tap: (position) ->
     {tile, x, y} = @getTileAndPosition(position)
-    tile.show(x, y)
+    tile.show(x, y, @showReponse)
+
+  showReponse: (message) =>
+    switch message.status
+      when "count"
+        {value, score} = message
+        @updateScore(score)
+
+  updateScore: (score) ->
+    @score += score
+    @$score.html(@score)
 
   press: (position) ->
     {tile, x, y} = @getTileAndPosition(position)

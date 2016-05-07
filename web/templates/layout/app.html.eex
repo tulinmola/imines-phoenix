@@ -17,6 +17,7 @@
   <body>
     <header>
       <h1>imines</h1>
+      <div id="score"><em>0</em> <span>points</span></div>
     </header>
     <main>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
