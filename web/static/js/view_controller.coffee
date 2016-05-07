@@ -53,11 +53,20 @@ class ViewController extends EventEmitter
     switch message.status
       when "count"
         {value, score} = message
-        @updateScore(score)
+        @updateScore(@score + score)
+      when "bomb"
+        @die()
 
-  updateScore: (score) ->
-    @score += score
+  updateScore: (@score) ->
     @$score.html(@score)
+
+  die: ->
+    @shake()
+    @updateScore(0)
+
+  shake: ->
+    @$el.removeClass("shake")
+    setTimeout (=> @$el.addClass("shake")), 100
 
   press: (position) ->
     {tile, x, y} = @getTileAndPosition(position)

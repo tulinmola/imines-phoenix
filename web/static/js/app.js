@@ -8,4 +8,5 @@ $(() => {
   const rt = new Realtime({token: window.userToken}),
         tiles = new TileManager(rt),
         view = new ViewController("main", tiles);
+  window.view = view;
 });
