@@ -22,7 +22,7 @@ defmodule Imines.TileChannelTest do
        %{socket: socket} do
     tile = create_water_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
-    ref = push(socket, "show", %{x: 4, y: 4})
+    ref = push(socket, "show", %{"x" => 4, "y" => 4})
     assert_reply ref, :ok, %{score: 0}
     assert_broadcast "update", %{x: 4, y: 4, value: 0}
     value = Repo.get!(Tile, tile.id) |> Tile.get_value(4, 4)
@@ -33,7 +33,7 @@ defmodule Imines.TileChannelTest do
        %{socket: socket} do
     tile = create_water_with_bombs_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
-    ref = push(socket, "show", %{x: 4, y: 4})
+    ref = push(socket, "show", %{"x" => 4, "y" => 4})
     assert_reply ref, :ok, %{status: "bomb"}
     assert_broadcast "update", %{x: 4, y: 4, value: @bomb}
     value = Repo.get!(Tile, tile.id) |> Tile.get_value(4, 4)
@@ -43,7 +43,7 @@ defmodule Imines.TileChannelTest do
   test "showing already shown makes nothing", %{socket: socket} do
     tile = create_bombs_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
-    ref = push(socket, "show", %{x: 4, y: 4})
+    ref = push(socket, "show", %{"x" => 4, "y" => 4})
     assert_reply ref, :ok, %{status: "none"}
   end
 end

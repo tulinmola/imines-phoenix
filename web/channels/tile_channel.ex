@@ -9,7 +9,7 @@ defmodule Imines.TileChannel do
     {:ok, response, assign(socket, :name, name)}
   end
 
-  def handle_in("show", %{x: x, y: y}, socket) do
+  def handle_in("show", %{"x" => x, "y" => y}, socket) do
     tile = Repo.get_by(Tile, name: socket.assigns.name)
     payload = case Tile.show(tile, x, y) do
       {:bomb, changeset} ->
