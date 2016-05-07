@@ -3,6 +3,8 @@ EventEmitter = require("events")
 Tile = require("../../web/static/js/tile")
 
 class Channel extends EventEmitter
+  push: (event, payload) ->
+    @emit("push", event, payload)
   leave: ->
     @emit("leave")
 
@@ -29,6 +31,14 @@ describe "Tile", ->
     tile = new Tile(rt, 0, 0)
     tile.channel.on "leave", done
     tile.destroy()
+
+  it "should send show to channel", (done) ->
+    tile = new Tile(rt, 0, 0)
+    tile.channel.on "push", (event, payload) ->
+      assert.equal "show", event
+      assert.deepEqual {x: 1, y: 2}, payload
+      done()
+    tile.show(1, 2)
 
   it "should update value", ->
     tile = new Tile(rt, 0, 0)
