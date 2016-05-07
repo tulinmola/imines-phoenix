@@ -16,7 +16,7 @@
 
   <body>
     <header>
-      <h1><!-- imines--></h1>
+      <h1>imines</h1>
     </header>
     <main>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -24,6 +24,9 @@
 
       <%= render @view_module, @view_template, assigns %>
     </main>
+
+    <%= encoded_image("icons.png", id: "icons", style: "display:none") %>
+    <%= encoded_image("icons@2x.png", id: "icons-2x", style: "display:none") %>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
