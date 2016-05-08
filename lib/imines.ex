@@ -6,6 +6,9 @@ defmodule Imines do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    # Start global status repo
+    Imines.Status.init()
+
     children = [
       # Start the endpoint when the application starts
       supervisor(Imines.Endpoint, []),

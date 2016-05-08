@@ -2,7 +2,7 @@ defmodule Imines.TileChannelTest do
   use Imines.ChannelCase
   import Imines.Factory
 
-  alias Imines.{Tile, Repo, TileView}
+  alias Imines.{Tile, Repo, TileView, Status}
 
   @bomb Tile.bomb
 
@@ -18,7 +18,7 @@ defmodule Imines.TileChannelTest do
     assert values == reply.values
   end
 
-  test "showing water gives you score of 0, broadcasts change and updates tile",
+  test "showing water gives you score of 0, broadcasts change, updates tile and sets last seen",
        %{socket: socket} do
     tile = create_water_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
@@ -27,9 +27,10 @@ defmodule Imines.TileChannelTest do
     assert_broadcast "update", %{x: 4, y: 4, value: 0}
     value = Repo.get!(Tile, tile.id) |> Tile.get_value(4, 4)
     assert 0 == value
+    assert {4, 4, _time} = Status.last_seen()
   end
 
-  test "showing bomb kills you, broadcasts change and updates tile",
+  test "showing bomb kills you, broadcasts change, updates tile and sets last seen",
        %{socket: socket} do
     tile = create_water_with_bombs_tile!()
     {:ok, _reply, socket} = subscribe_and_join(socket, "tiles:#{tile.name}", %{})
@@ -38,6 +39,7 @@ defmodule Imines.TileChannelTest do
     assert_broadcast "update", %{x: 4, y: 4, value: @bomb}
     value = Repo.get!(Tile, tile.id) |> Tile.get_value(4, 4)
     assert @bomb == value
+    assert {4, 4, _time} = Status.last_seen()
   end
 
   test "showing already shown makes nothing", %{socket: socket} do

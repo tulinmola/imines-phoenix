@@ -29,6 +29,12 @@ class ViewController extends EventEmitter
     $(window).on "resize", @resize
     setTimeout ( => @resize()), 1
 
+  lastSeen: ->
+    [x, y, time] = @$arena.data("last-seen")?.split(",").map((s) -> parseInt(s, 10))
+    x = -(x || 0) * BLOCK_SIZE
+    y = -(y || 0) * BLOCK_SIZE
+    {x, y, time}
+
   resize: =>
     @offset = @$el.offset()
     @width = @$el.width()

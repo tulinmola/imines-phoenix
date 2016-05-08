@@ -1,7 +1,7 @@
 defmodule Imines.TileChannel do
   use Imines.Web, :channel
 
-  alias Imines.{Tile, TileView, Repo}
+  alias Imines.{Tile, TileView, Repo, Status}
 
   def join("tiles:" <> name, _payload, socket) do
     tile = Tile.get_or_create_tile!(name)
@@ -13,16 +13,29 @@ defmodule Imines.TileChannel do
     tile = Repo.get_by(Tile, name: socket.assigns.name)
     payload = case Tile.show(tile, x, y) do
       {:bomb, changeset} ->
-        Repo.update!(changeset)
-        broadcast socket, "update", %{x: x, y: y, value: Tile.bomb}
+        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: Tile.bomb})
         %{status: "bomb"}
       {:count, count, changeset} ->
-        Repo.update!(changeset)
-        broadcast socket, "update", %{x: x, y: y, value: count}
+        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: count})
         %{status: "count", value: count, score: count}
       _ ->
         %{status: "none"}
     end
     {:reply, {:ok, payload}, socket}
+  end
+
+  defp update_tile_and_broadcast(socket, changeset, payload) do
+    Repo.update!(changeset)
+    set_last_seen(changeset, payload)
+    broadcast(socket, "update", payload)
+  end
+  defp set_last_seen(changeset, %{x: rx, y: ry}) do
+    [tx, ty] = changeset
+      |> Ecto.Changeset.get_field(:name)
+      |> String.split("x")
+      |> Enum.map(&(elem(Integer.parse(&1), 0)))
+    x = tx * Tile.size + rx
+    y = ty * Tile.size + ry
+    Status.set_last_seen(x, y)
   end
 end

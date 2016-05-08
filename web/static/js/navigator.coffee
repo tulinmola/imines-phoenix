@@ -1,6 +1,6 @@
 class Navigator
   constructor: (@view) ->
-    @x = @y = 0
+    {@x, @y} = @view.lastSeen()
     @scale = 1
 
     [element] = @view.$el

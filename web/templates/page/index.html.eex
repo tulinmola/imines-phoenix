@@ -1,4 +1,4 @@
 <div class="axes">
-  <div class="arena">
+  <div class="arena" data-last-seen="<%= last_seen %>">
   </div>
 </div>
