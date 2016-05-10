@@ -9,11 +9,13 @@ defmodule Imines.Tile do
   @bomb 9
   @water 10
   @water_with_bomb 11
+  @flag 12
 
   @neightbours [{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}]
 
   def water, do: @water
   def bomb, do: @bomb
+  def flag, do: @flag
   def water_with_bomb, do: @water_with_bomb
   def size, do: @size
 

@@ -104,7 +104,15 @@ class ViewController extends EventEmitter
 
   press: (position) ->
     {tile, x, y} = @getTileAndPosition(position)
-    # TODO: Add flag
+    tile.mark(x, y, @markResponse) if tile.isWater(x, y)
+
+  markResponse: (tile, x, y, message) =>
+    switch message.status
+      when "ok"
+        {score} = message
+        @updateScore(@score + score)
+      when "fail"
+        @die()
 
   dtap: (position) ->
     {tile, x, y} = @getTileAndPosition(position)

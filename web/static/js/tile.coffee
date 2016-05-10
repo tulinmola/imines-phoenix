@@ -25,6 +25,10 @@ class Tile extends EventEmitter
     @channel.push("show", {x, y})
       .receive "ok", (message) => callback(this, x, y, message)
 
+  mark: (x, y, callback) ->
+    @channel.push("mark", {x, y})
+      .receive "ok", (message) => callback(this, x, y, message)
+
   destroy: ->
     @channel.leave()
     @emit("destroy")

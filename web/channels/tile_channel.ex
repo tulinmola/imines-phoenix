@@ -13,11 +13,28 @@ defmodule Imines.TileChannel do
     tile = Repo.get_by(Tile, name: socket.assigns.name)
     payload = case Tile.show(tile, x, y) do
       {:bomb, changeset} ->
-        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: Tile.bomb})
+        value = TileView.value_view(Tile.bomb)
+        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: value})
         %{status: "bomb"}
       {:count, count, changeset} ->
         update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: count})
         %{status: "count", value: count, score: count}
+      _ ->
+        %{status: "none"}
+    end
+    {:reply, {:ok, payload}, socket}
+  end
+
+  def handle_in("mark", %{"x" => x, "y" => y}, socket) do
+    tile = Repo.get_by(Tile, name: socket.assigns.name)
+    payload = case Tile.show(tile, x, y) do
+      {:bomb, changeset} ->
+        value = TileView.value_view(Tile.flag)
+        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: value})
+        %{status: "ok", score: 20}
+      {:count, count, changeset} ->
+        update_tile_and_broadcast(socket, changeset, %{x: x, y: y, value: count})
+        %{status: "fail"}
       _ ->
         %{status: "none"}
     end
