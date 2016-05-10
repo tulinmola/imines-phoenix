@@ -1,0 +1,53 @@
+@import "settings";
+
+header {
+  position: relative;
+  height: $header-height;
+  color: $header-color;
+  background-color: $header-background-color;
+  border-bottom: 1px solid #aaa;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  line-height: $header-height;
+}
+
+#toggle-nav {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: $header-height;
+  color: $header-color;
+  width: $header-height;
+  text-align: center;
+  font-size: 26px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: mix($header-background-color, #fff, 50%);
+  }
+}
+
+#score {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 26px;
+  padding: 0 18px;
+  line-height: $header-height;
+
+  em {
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 480px) {
+    span {
+      display: none;
+    }
+  }
+}
